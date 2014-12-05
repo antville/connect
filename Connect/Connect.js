@@ -90,15 +90,15 @@ Connect.prototype.trail_macro = function(param) {
     return;
   }
   var suffix = param.context ? "_" + param.context : "";
-  getProperty("connect.facebook.id") && this.renderSkin("Connect#facebook" + suffix);
-  getProperty("connect.google.id") && this.renderSkin("Connect#google" + suffix);
-  getProperty("connect.twitter.id") && this.renderSkin("Connect#twitter" + suffix);
+  getProperty("trail.connect.facebook.id") && this.renderSkin("Connect#facebook" + suffix);
+  getProperty("trail.connect.google.id") && this.renderSkin("Connect#google" + suffix);
+  getProperty("trail.connect.twitter.id") && this.renderSkin("Connect#twitter" + suffix);
 };
 
 Connect.prototype.scribe = function(type) {
   var name = type.titleize();
-  var appId = getProperty("connect." + type + ".id");
-  var secret = getProperty("connect." + type + ".key");
+  var appId = getProperty("trail.connect." + type + ".id");
+  var secret = getProperty("trail.connect." + type + ".key");
 
   if (!secret || req.data.denied) {
     throw Error(gettext("Connecting with {0} failed. {1} Please try again.", name,
@@ -208,8 +208,8 @@ Connect.prototype.scribe = function(type) {
 };
 
 Connect.prototype.facebook =function(req) {
-  var appId = getProperty("connect.facebook.id");
-  var secret = getProperty("connect.facebook.key");
+  var appId = getProperty("trail.connect.facebook.id");
+  var secret = getProperty("trail.connect.facebook.key");
   if (!secret || req.data.error) {
     throw Error(gettext("Could not connect with Facebook. ({0})", -1));
   }
@@ -283,8 +283,8 @@ Connect.prototype.google = function(req) {
     var http = new helma.Http();
     http.setMethod("POST");
     http.setContent("code=" + encodeURIComponent(req.data.code) +
-        "&client_id=" + encodeURIComponent(getProperty("connect.google.id")) +
-        "&client_secret=" + encodeURIComponent(getProperty("connect.google.key")) +
+        "&client_id=" + encodeURIComponent(getProperty("trail.connect.google.id")) +
+        "&client_secret=" + encodeURIComponent(getProperty("trail.connect.google.key")) +
         "&redirect_uri=" + encodeURIComponent(url) + "&grant_type=authorization_code");
     var response = http.getUrl("https://accounts.google.com/o/oauth2/token");
     var data = JSON.parse(response.content);
@@ -313,7 +313,7 @@ Connect.prototype.google = function(req) {
     }
   } else {
     res.redirect("https://accounts.google.com/o/oauth2/auth?" +
-        "client_id=" + encodeURIComponent(getProperty("connect.google.id")) +
+        "client_id=" + encodeURIComponent(getProperty("trail.connect.google.id")) +
         "&redirect_uri=" + encodeURIComponent(url) +
         "&scope=" + encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile") +
         "+" + encodeURIComponent("https://www.googleapis.com/auth/userinfo.email") +
