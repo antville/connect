@@ -16,15 +16,32 @@
 // limitations under the License.
 
 /**
- * @fileoverview Defines the Antville Connect trail.
+ * @fileoverview Defines the Antville Connect claustra.
  */
 
 "http://code.google.com/p/antville/wiki/ConnectFeature"
 
-app.addRepository(app.dir + "/../trails/connect/scribe-1.3.0.jar");
+app.addRepository(app.dir + "/../claustra/connect/scribe-1.3.0.jar");
 
 // FIXME: Connecting with Twitter and Google currently does not return an e-mail address.
 // Instead, noreplay@antville.org is used – which is very poor and should be fixed ASAP.
+
+Connect.prototype.main = function (model, action) {
+  var defaultDomain = getProperty('domain.*');
+  var domain = getProperty('domain.' + res.handlers.site.name);
+  if (defaultDomain && domain && !domain.endsWith(defaultDomain)) {
+    return;
+  }
+
+  /*
+  var suffix = param.context ? "_" + param.context : "";
+  getProperty("claustra.connect.facebook.id") && this.renderSkin("Connect#facebook" + suffix);
+  getProperty("claustra.connect.google.id") && this.renderSkin("Connect#google" + suffix);
+  getProperty("claustra.connect.twitter.id") && this.renderSkin("Connect#twitter" + suffix);
+  */
+
+  this.renderSkin('Connect#main');
+};
 
 Connect.prototype.getUserByConnection = function(type, id) {
   var user;
@@ -41,14 +58,14 @@ Connect.prototype.getUserByConnection = function(type, id) {
 
 Connect.prototype.getPermission = function(action) {
   switch (action) {
-    case "connect":
+    case 'enable':
     return true;
-    case "disconnect":
+    case 'disable':
     return User.require(User.REGULAR);
   }
 };
 
-Connect.prototype.connect_action = function() {
+Connect.prototype.enable_action = function() {
   try {
     switch (req.data.type) {
       case "facebook":
@@ -71,7 +88,7 @@ Connect.prototype.connect_action = function() {
   return;
 };
 
-Connect.prototype.disconnect_action = function() {
+Connect.prototype.disable_action = function() {
   switch (req.data.type) {
     case "facebook":
     case "google":
@@ -83,22 +100,10 @@ Connect.prototype.disconnect_action = function() {
   return;
 };
 
-Connect.prototype.trail_macro = function(param) {
-  var defaultDomain = getProperty("domain.*");
-  var domain = getProperty("domain." + res.handlers.site.name);
-  if (defaultDomain && domain && !domain.endsWith(defaultDomain)) {
-    return;
-  }
-  var suffix = param.context ? "_" + param.context : "";
-  getProperty("trail.connect.facebook.id") && this.renderSkin("Connect#facebook" + suffix);
-  getProperty("trail.connect.google.id") && this.renderSkin("Connect#google" + suffix);
-  getProperty("trail.connect.twitter.id") && this.renderSkin("Connect#twitter" + suffix);
-};
-
 Connect.prototype.scribe = function(type) {
   var name = type.titleize();
-  var appId = getProperty("trail.connect." + type + ".id");
-  var secret = getProperty("trail.connect." + type + ".key");
+  var appId = getProperty("claustra.connect." + type + ".id");
+  var secret = getProperty("claustra.connect." + type + ".key");
 
   if (!secret || req.data.denied) {
     throw Error(gettext("Connecting with {0} failed. {1} Please try again.", name,
@@ -208,8 +213,8 @@ Connect.prototype.scribe = function(type) {
 };
 
 Connect.prototype.facebook =function(req) {
-  var appId = getProperty("trail.connect.facebook.id");
-  var secret = getProperty("trail.connect.facebook.key");
+  var appId = getProperty("claustra.connect.facebook.id");
+  var secret = getProperty("claustra.connect.facebook.key");
   if (!secret || req.data.error) {
     throw Error(gettext("Could not connect with Facebook. ({0})", -1));
   }
@@ -283,8 +288,8 @@ Connect.prototype.google = function(req) {
     var http = new helma.Http();
     http.setMethod("POST");
     http.setContent("code=" + encodeURIComponent(req.data.code) +
-        "&client_id=" + encodeURIComponent(getProperty("trail.connect.google.id")) +
-        "&client_secret=" + encodeURIComponent(getProperty("trail.connect.google.key")) +
+        "&client_id=" + encodeURIComponent(getProperty("claustra.connect.google.id")) +
+        "&client_secret=" + encodeURIComponent(getProperty("claustra.connect.google.key")) +
         "&redirect_uri=" + encodeURIComponent(url) + "&grant_type=authorization_code");
     var response = http.getUrl("https://accounts.google.com/o/oauth2/token");
     var data = JSON.parse(response.content);
@@ -313,7 +318,7 @@ Connect.prototype.google = function(req) {
     }
   } else {
     res.redirect("https://accounts.google.com/o/oauth2/auth?" +
-        "client_id=" + encodeURIComponent(getProperty("trail.connect.google.id")) +
+        "client_id=" + encodeURIComponent(getProperty("claustra.connect.google.id")) +
         "&redirect_uri=" + encodeURIComponent(url) +
         "&scope=" + encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile") +
         "+" + encodeURIComponent("https://www.googleapis.com/auth/userinfo.email") +
@@ -322,7 +327,7 @@ Connect.prototype.google = function(req) {
 };
 
 Connect.prototype.href = function (action) {
-  var href = root.trails.href('connect');
+  var href = root.claustra.href('connect');
   return href + '/' + (action || String.EMPTY);
 };
 
