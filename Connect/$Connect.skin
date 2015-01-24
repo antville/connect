@@ -1,0 +1,102 @@
+<% #main %>
+var path = location.pathname.split('/');
+path = path.slice(-2).join('/');
+
+switch (path) {
+   case 'members/login':
+   scripts.push(function () {
+      addStyles();
+      var html = <% connect.skin $Connect#formRow | json %>;
+      var form = $('form#login');
+      form.find('.uk-form-row:last').before(html);
+      if ('<% property claustra.connect.facebook.id %>') {
+         add('facebook', '<% this.href enable %>', '<% gettext 'Login with {0}' Facebook %>');
+      }
+      if ('<% property claustra.connect.twitter.id %>') {
+         add('twitter', '<% this.href enable %>', '<% gettext 'Login with {0}' Twitter %>');
+      }
+      if ('<% property claustra.connect.google.id %>') {
+         add('google', '<% this.href enable %>', '<% gettext 'Login with {0}' Google %>');
+      }
+   });
+   break;
+
+   case 'members/edit':
+   scripts.push(function () {
+      addStyles();
+      var html = <% connect.skin $Connect#formRow | json %>;
+      var form = $('form#edit');
+      form.find('.uk-form-row:last').before(html);
+      if ('<% property claustra.connect.facebook.id %>') {
+         if ('<% membership.user.metadata facebook_id %>') {
+            add('facebook', '<% this.href disable %>', '<% gettext "Disconnect from {0}" Facebook %>');
+         } else {
+            add('facebook', '<% this.href enable %>', '<% gettext "Connect with {0}" Facebook %>');
+         }
+      }
+      if ('<% property claustra.connect.twitter.id %>') {
+         if ('<% membership.user.metadata twitter_id %>') {
+            add('twitter', '<% this.href disable %>', '<% gettext "Disconnect from {0}" Twitter %>');
+         } else {
+            add('twitter', '<% this.href enable %>', '<% gettext "Connect with {0}" Twitter %>');
+         }
+      }
+      if ('<% property claustra.connect.google.id %>') {
+         if ('<% membership.user.metadata google_id %>') {
+            add('google', '<% this.href disable %>', '<% gettext "Disconnect from {0}" Google %>');
+         } else {
+            add('google', '<% this.href enable %>', '<% gettext "Connect with {0}" Google %>');
+         }
+      }
+   });
+   break;
+}
+
+function add(type, url, text) {
+   var fieldset = $('.av-claustra-connect fieldset');
+   var item = $(<% connect.skin $Connect#listItem | json %>);
+   item.find('i')
+      .addClass('av-sprite-' + type + '_round')
+      .end()
+      .find('a')
+      .addClass('av-claustra-connect-' + type)
+      .html(text)
+      .on('click', function (event) {
+         event.preventDefault();
+         var form = fieldset.parents('form');
+         if (path === 'members/login') {
+            form.attr('action', url + '?type=' + type).submit();
+         } else {
+            location.href = url + '?type=' + type;
+         }
+      });
+   fieldset.append(item);
+}
+
+function addStyles() {
+   var css = $('<style>')
+      .attr('type', 'text/css')
+      .html(<% connect.skin $Connect#stylesheet | json %>);
+   $('head').append(css);
+}
+
+<% #stylesheet %>
+.av-claustra-connect i {
+   margin: -2px;
+   vertical-align: middle;
+   opacity: .3;
+   transform: scale(0.7);
+}
+
+<% #formRow %>
+<div class='uk-form-row av-claustra-connect'>
+   <fieldset>
+      <legend><% gettext Connections %></legend>
+   </fieldset>
+</div>
+
+<% #listItem %>
+<div>
+   <i class='av-sprite'></i>
+   <a href='javascript:'></a>
+</div>

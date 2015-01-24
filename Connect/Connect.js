@@ -32,15 +32,7 @@ Connect.prototype.main = function (model, action) {
   if (defaultDomain && domain && !domain.endsWith(defaultDomain)) {
     return;
   }
-
-  /*
-  var suffix = param.context ? "_" + param.context : "";
-  getProperty("claustra.connect.facebook.id") && this.renderSkin("Connect#facebook" + suffix);
-  getProperty("claustra.connect.google.id") && this.renderSkin("Connect#google" + suffix);
-  getProperty("claustra.connect.twitter.id") && this.renderSkin("Connect#twitter" + suffix);
-  */
-
-  this.renderSkin('Connect#main');
+  this.renderSkin('$Connect#main');
 };
 
 Connect.prototype.getUserByConnection = function(type, id) {
@@ -282,7 +274,7 @@ Connect.prototype.google = function(req) {
     } catch (ex) { }
   }
 
-  var url = this.href('connect') + "?type=google";
+  var url = this.href(req.action) + "?type=google";
 
   if (req.data.code) {
     var http = new helma.Http();
