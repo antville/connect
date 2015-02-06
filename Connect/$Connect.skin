@@ -1,10 +1,10 @@
 <% #main %>
-var path = location.pathname.split('/');
-path = path.slice(-2).join('/');
+$(function () {
+   var path = location.pathname.split('/');
+   path = path.slice(-2).join('/');
 
-switch (path) {
-   case 'members/login':
-   scripts.push(function () {
+   switch (path) {
+      case 'members/login':
       addStyles();
       var html = <% connect.skin $Connect#formRow | json %>;
       var form = $('form#login');
@@ -18,11 +18,9 @@ switch (path) {
       if ('<% property claustra.connect.google.id %>') {
          add('google', '<% this.href enable %>', '<% gettext 'Login with {0}' Google %>');
       }
-   });
-   break;
+      break;
 
-   case 'members/edit':
-   scripts.push(function () {
+      case 'members/edit':
       addStyles();
       var html = <% connect.skin $Connect#formRow | json %>;
       var form = $('form#edit');
@@ -48,37 +46,37 @@ switch (path) {
             add('google', '<% this.href enable %>', '<% gettext "Connect with {0}" Google %>');
          }
       }
-   });
-   break;
-}
+      break;
+   }
 
-function add(type, url, text) {
-   var fieldset = $('.av-claustra-connect fieldset');
-   var item = $(<% connect.skin $Connect#listItem | json %>);
-   item.find('i')
-      .addClass('av-sprite-' + type + '_round')
-      .end()
-      .find('a')
-      .addClass('av-claustra-connect-' + type)
-      .html(text)
-      .on('click', function (event) {
-         event.preventDefault();
-         var form = fieldset.parents('form');
-         if (path === 'members/login') {
-            form.attr('action', url + '?type=' + type).submit();
-         } else {
-            location.href = url + '?type=' + type;
-         }
-      });
-   fieldset.append(item);
-}
+   function add(type, url, text) {
+      var fieldset = $('.av-claustra-connect fieldset');
+      var item = $(<% connect.skin $Connect#listItem | json %>);
+      item.find('i')
+         .addClass('av-sprite-' + type + '_round')
+         .end()
+         .find('a')
+         .addClass('av-claustra-connect-' + type)
+         .html(text)
+         .on('click', function (event) {
+            event.preventDefault();
+            var form = fieldset.parents('form');
+            if (path === 'members/login') {
+               form.attr('action', url + '?type=' + type).submit();
+            } else {
+               location.href = url + '?type=' + type;
+            }
+         });
+      fieldset.append(item);
+   }
 
-function addStyles() {
-   var css = $('<style>')
-      .attr('type', 'text/css')
-      .html(<% connect.skin $Connect#stylesheet | json %>);
-   $('head').append(css);
-}
+   function addStyles() {
+      var css = $('<style>')
+         .attr('type', 'text/css')
+         .html(<% connect.skin $Connect#stylesheet | json %>);
+      $('head').append(css);
+   }
+});
 
 <% #stylesheet %>
 .av-claustra-connect i {

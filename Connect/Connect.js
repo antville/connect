@@ -185,6 +185,7 @@ Connect.prototype.scribe = function(type) {
   if (!user) {
     if (!session.user) {
       var name = root.users.getAccessName(data.name);
+      // FIXME: Twitter does not return an e-mail address so we should present a form here
       user = User.register({
         name: name,
         hash: session.data.requestToken.getToken(),
