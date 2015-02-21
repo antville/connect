@@ -49,7 +49,7 @@ $(function () {
       break;
    }
 
-   $('a[href="javascript:"]').css('display', 'initial');
+   $('a[href="javascript:"]:hidden').css('display', 'inline-block');
 
    function add(type, url, text) {
       var fieldset = $('.av-claustra-connect fieldset');
