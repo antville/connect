@@ -49,6 +49,8 @@ $(function () {
       break;
    }
 
+   $('a[href="javascript:"]').css('display', 'initial');
+
    function add(type, url, text) {
       var fieldset = $('.av-claustra-connect fieldset');
       var item = $(<% connect.skin $Connect#listItem | json %>);
