@@ -1,0 +1,21 @@
+apply plugin: 'java'
+defaultTasks 'deps'
+
+repositories {
+  jcenter()
+  mavenCentral()
+}
+
+dependencies {
+  runtime group: 'org.scribe', name: 'scribe', version: '1.3.0'
+}
+
+task deps(type: Copy) {
+  from configurations.runtime
+  into '.'
+  finalizedBy 'cleanup'
+}
+
+task cleanup(type: Delete) {
+  delete 'commons-codec-1.4.jar'
+}
